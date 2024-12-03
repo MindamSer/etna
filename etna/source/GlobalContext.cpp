@@ -229,6 +229,12 @@ static vk::UniqueDevice create_logical_device(
     .synchronization2 = VK_TRUE,
   };
 
+  vk::PhysicalDeviceShaderAtomicFloatFeaturesEXT atomicFloatFeature{
+    .pNext = &sync2Feature,
+    .shaderBufferFloat32Atomics = VK_TRUE,
+    .shaderBufferFloat32AtomicAdd = VK_TRUE,
+  };
+
   std::vector<char const*> deviceExtensions(
     params.deviceExtensions.begin(), params.deviceExtensions.end());
 
@@ -254,7 +260,7 @@ static vk::UniqueDevice create_logical_device(
   // PhysicalDeviceFeatures2 structure while the actual
   // pEnabledFeatures has to be nullptr.
   vk::DeviceCreateInfo creatInfo{
-    .pNext = &sync2Feature,
+    .pNext = &atomicFloatFeature,
     .queueCreateInfoCount = static_cast<uint32_t>(queueInfos.size()),
     .pQueueCreateInfos = queueInfos.data(),
     .enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size()),
