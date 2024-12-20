@@ -234,6 +234,8 @@ static vk::UniqueDevice create_logical_device(
     .pNext = &sync2Feature,
     .shaderBufferFloat32Atomics = VK_TRUE,
     .shaderBufferFloat32AtomicAdd = VK_TRUE,
+    .shaderSharedFloat32Atomics = VK_TRUE,
+    .shaderSharedFloat32AtomicAdd = VK_TRUE,
   };
 
   std::vector<char const*> deviceExtensions(
