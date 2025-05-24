@@ -10,7 +10,7 @@
 #include <etna/ShaderProgram.hpp>
 #include <etna/DescriptorSet.hpp>
 #include <etna/Image.hpp>
-#include <etna/BarrierBehavoir.hpp>
+#include <etna/BarrierBehavior.hpp>
 
 namespace etna
 {
@@ -97,7 +97,26 @@ DescriptorSet create_descriptor_set(
   DescriptorLayoutId layout,
   vk::CommandBuffer command_buffer,
   std::vector<Binding> bindings,
-  BarrierBehavoir behavoir = BarrierBehavoir::eDefault);
+  BarrierBehavior behavior = BarrierBehavior::eDefault);
+
+/**
+ * \brief Creates a persistent descriptor set which does not automatically set
+ * barriers and is not deallocated across frames. Otherwise similar to
+ * etna::create_descriptor_set.
+ * \note In order to generate barriers call processBarriers on the dset object
+ * passing the command buffer to it. The comment about etna::flush_barriers
+ * (see above) is also applicable here.
+ *
+ * \param layout The layout describing what bindings the target shader has.
+ * Use etna::get_shader_program to get it from the shader automatically.
+ * \param bindings The table of what to bind where.
+ * \param allow_unbound_slots Whether to not validate that the bindings cover
+ * all slots in the layout. Useful if bindless is not fully supported on your
+ * hw and you need to over-declare registers in the shader.
+ * \return The descriptor set that can then be bound.
+ */
+PersistentDescriptorSet create_persistent_descriptor_set(
+  DescriptorLayoutId layout, std::vector<Binding> bindings, bool allow_unbound_slots = false);
 
 Image create_image_from_bytes(
   Image::CreateInfo info, vk::CommandBuffer command_buffer, const void* data);

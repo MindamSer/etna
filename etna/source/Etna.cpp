@@ -72,10 +72,18 @@ DescriptorSet create_descriptor_set(
   DescriptorLayoutId layout,
   vk::CommandBuffer command_buffer,
   std::vector<Binding> bindings,
-  BarrierBehavoir behavoir)
+  BarrierBehavior behavior)
 {
-  auto set = gContext->getDescriptorPool().allocateSet(layout, bindings, command_buffer, behavoir);
+  auto set = gContext->getDescriptorPool().allocateSet(layout, bindings, command_buffer, behavior);
   write_set(set);
+  return set;
+}
+
+PersistentDescriptorSet create_persistent_descriptor_set(
+  DescriptorLayoutId layout, std::vector<Binding> bindings, bool allow_unbound_slots)
+{
+  auto set = gContext->getPersistentDescriptorPool().allocateSet(layout, bindings);
+  write_set(set, allow_unbound_slots);
   return set;
 }
 

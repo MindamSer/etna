@@ -9,7 +9,7 @@
 #include <etna/Image.hpp>
 #include <etna/Buffer.hpp>
 #include <etna/Window.hpp>
-#include <etna/BarrierBehavoir.hpp>
+#include <etna/BarrierBehavior.hpp>
 
 #include <vk_mem_alloc.h>
 
@@ -21,6 +21,7 @@ struct DescriptorSetLayoutCache;
 struct ShaderProgramManager;
 class PipelineManager;
 struct DynamicDescriptorPool;
+struct PersistentDescriptorPool;
 class ResourceStates;
 class PerFrameCmdMgr;
 class OneShotCmdMgr;
@@ -37,7 +38,7 @@ public:
   std::unique_ptr<Window> createWindow(Window::CreateInfo info);
   std::unique_ptr<PerFrameCmdMgr> createPerFrameCmdMgr();
   std::unique_ptr<OneShotCmdMgr> createOneShotCmdMgr();
-  bool shouldGenerateBarriersWhen(BarrierBehavoir behavoir) const;
+  bool shouldGenerateBarriersWhen(BarrierBehavior behavior) const;
 
   vk::Device getDevice() const { return vkDevice.get(); }
   vk::PhysicalDevice getPhysicalDevice() const { return vkPhysDevice; }
@@ -49,6 +50,7 @@ public:
   PipelineManager& getPipelineManager();
   DescriptorSetLayoutCache& getDescriptorSetLayouts();
   DynamicDescriptorPool& getDescriptorPool();
+  PersistentDescriptorPool& getPersistentDescriptorPool();
   ResourceStates& getResourceTracker();
   GpuWorkCount& getMainWorkCount() { return mainWorkStream; }
   const GpuWorkCount& getMainWorkCount() const { return mainWorkStream; }
@@ -81,7 +83,8 @@ private:
   std::unique_ptr<DescriptorSetLayoutCache> descriptorSetLayouts;
   std::unique_ptr<ShaderProgramManager> shaderPrograms;
   std::unique_ptr<PipelineManager> pipelineManager;
-  std::unique_ptr<DynamicDescriptorPool> descriptorPool;
+  std::unique_ptr<DynamicDescriptorPool> perFrameDescriptorPool;
+  std::unique_ptr<PersistentDescriptorPool> persistentDescriptorPool;
   std::unique_ptr<ResourceStates> resourceTracking;
   std::unique_ptr<void, void (*)(void*)> tracyCtx;
 

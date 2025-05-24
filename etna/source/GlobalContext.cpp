@@ -388,7 +388,8 @@ GlobalContext::GlobalContext(const InitParams& params)
   descriptorSetLayouts = std::make_unique<DescriptorSetLayoutCache>();
   shaderPrograms = std::make_unique<ShaderProgramManager>();
   pipelineManager = std::make_unique<PipelineManager>(vkDevice.get(), *shaderPrograms);
-  descriptorPool = std::make_unique<DynamicDescriptorPool>(vkDevice.get(), mainWorkStream);
+  perFrameDescriptorPool = std::make_unique<DynamicDescriptorPool>(vkDevice.get(), mainWorkStream);
+  persistentDescriptorPool = std::make_unique<PersistentDescriptorPool>(vkDevice.get());
   resourceTracking = std::make_unique<ResourceStates>();
 
   auto tempPool =
@@ -490,7 +491,12 @@ DescriptorSetLayoutCache& GlobalContext::getDescriptorSetLayouts()
 
 DynamicDescriptorPool& GlobalContext::getDescriptorPool()
 {
-  return *descriptorPool;
+  return *perFrameDescriptorPool;
+}
+
+PersistentDescriptorPool& GlobalContext::getPersistentDescriptorPool()
+{
+  return *persistentDescriptorPool;
 }
 
 ResourceStates& GlobalContext::getResourceTracker()
@@ -501,13 +507,13 @@ ResourceStates& GlobalContext::getResourceTracker()
 GlobalContext::~GlobalContext() = default;
 
 
-bool GlobalContext::shouldGenerateBarriersWhen(BarrierBehavoir behavoir) const
+bool GlobalContext::shouldGenerateBarriersWhen(BarrierBehavior behavior) const
 {
-  if (behavoir == BarrierBehavoir::eDefault)
+  if (behavior == BarrierBehavior::eDefault)
   {
     return shouldGenerateBarriersFlag;
   }
-  return behavoir == BarrierBehavoir::eGenerateBarriers;
+  return behavior == BarrierBehavior::eGenerateBarriers;
 }
 
 } // namespace etna
