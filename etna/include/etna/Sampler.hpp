@@ -20,6 +20,7 @@ public:
     std::string_view name;
     float minLod = 0.0f;
     float maxLod = 1.0f;
+    vk::SamplerMipmapMode mipmapMode = vk::SamplerMipmapMode::eLinear;
   };
 
   explicit Sampler(CreateInfo info);
